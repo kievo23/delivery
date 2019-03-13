@@ -1,0 +1,79 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+  meta(name='description' content='Start your development with a Dashboard for Bootstrap 4.')
+  meta(name='author' content='Creative Tim')
+  title=title
+  // Favicon
+  link(href='/assets/img/brand/favicon.png' rel='icon' type='image/png')
+  // Fonts
+  link(href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet')
+  // Icons
+  link(href='/assets/vendor/nucleo/css/nucleo.css' rel='stylesheet')
+  link(href='/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' rel='stylesheet')
+  // Argon CSS
+  link(type='text/css' href='/assets/css/argon.css?v=1.0.0' rel='stylesheet')
+.main-content
+  
+  // Header
+  .header.bg-gradient-primary.py-2.py-lg-5
+    .container
+      .header-body.text-center.mb-7
+        .row.justify-content-center
+          .col-lg-5.col-md-6
+            h1.text-white Smart Delivery!
+            p.text-lead.text-light welcome to efficient deliveries in Kenya.
+    .separator.separator-bottom.separator-skew.zindex-100
+      svg(x='0' y='0' viewbox='0 0 2560 100' preserveaspectratio='none' version='1.1' xmlns='http://www.w3.org/2000/svg')
+        polygon.fill-default(points='2560 0 2560 100 0 100')
+  // Page content
+  .container.mt--8.pb-5
+    .row.justify-content-center
+      .col-lg-5.col-md-7
+        .card.bg-secondary.shadow.border-0
+          .card-body.px-lg-5.py-lg-5
+            
+            form(method='post' action='/login')
+              .form-group.mb-3
+                .input-group.input-group-alternative
+                  .input-group-prepend
+                    span.input-group-text
+                      i.ni.ni-email-83
+                  input.form-control(placeholder='Email' type='email' name='username')
+              .form-group
+                .input-group.input-group-alternative
+                  .input-group-prepend
+                    span.input-group-text
+                      i.ni.ni-lock-circle-open
+                  input.form-control(placeholder='Password' type='password' name='password')
+              
+              .text-center
+                button.btn.btn-primary.my-4(type='submit') Sign in
+        .row.mt-3
+          .col-6
+            a.text-light(href='#')
+              small Forgot password?
+          .col-6.text-right
+            a.text-light(href='#')
+              small Create new account
+// Footer
+footer.py-5
+  .container
+    .row.align-items-center.justify-content-xl-between
+      .col-xl-6
+        .copyright.text-center.text-xl-left.text-muted
+          | &copy; 2018 
+          a.font-weight-bold.ml-1(href='#' target='_blank') Kev Inc
+      .col-xl-6
+        ul.nav.nav-footer.justify-content-center.justify-content-xl-end
+          li.nav-item
+            a.nav-link(href='#' target='_blank') All About Delivery
+          li.nav-item
+            a.nav-link(href='#' target='_blank') About Us
+          
+// Core
+script(src='/assets/vendor/jquery/dist/jquery.min.js')
+script(src='/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js')
+// Argon JS
+script(src='/assets/js/argon.js?v=1.0.0')

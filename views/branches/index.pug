@@ -1,0 +1,40 @@
+extends ../layout
+block content
+    .row
+      .card.shadow
+        .card-header.border-0
+          .row
+            .col-xl-4
+              h3.mb-0 Branches
+            .col-xl-6.text-right
+              a.btn.btn-primary(href="/branches/create")
+                |  Create Branch
+        .table-responsive
+          table.table.align-items-center.table-flush
+            thead.thead-light
+              tr
+                th(scope='col') Name
+                th(scope='col') Location
+                th(scope='col') Contacts
+                th(scope='col') Details
+                th(scope='col') Actions
+                th(scope='col')
+            tbody
+              each d in data
+                tr
+                  td.pb-3(scope='col')
+                    =d.name
+                  td
+                    =d.location 
+                  td
+                    =d.contacts 
+                  td
+                    =d.details 
+                  td
+                    a.action(href='/branches/edit/'+ d.id) 
+                      i.fas.fa-edit
+                    a.action(href='#' onclick="return confirm('are you sure you want to delete this branch?')") 
+                      i.fas.fa-trash
+                    a.action(href='#' onclick="return confirm('are you sure you want to activate this branch?')")
+                      i.fas.fa-check-circle
+              

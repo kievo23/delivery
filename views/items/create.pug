@@ -1,0 +1,64 @@
+extends ../layout-min
+
+block content
+    .row
+      .card.bg-secondary.shadow        
+        .card-body
+          form(method="post",action="/items/create")
+            h6.heading-small.text-muted.mb-4 Product information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='name') Name
+                    input#name.form-control.form-control-alternative(type='text' placeholder='Dispenser' name='name' required)
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='quantity') Quantity
+                    input#quantity.form-control.form-control-alternative(type='text' placeholder='Quantity' name='quantity' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='productcode') productCode
+                    input#productcode.form-control.form-control-alternative(type='text' placeholder='Product Code' value='' name='productcode' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='productcode') Price
+                    input#price.form-control.form-control-alternative(type='text' placeholder='Price' value='' name='price' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='photo') Photo
+                    input#photo.form-control.form-control-alternative(type='file')
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='category') Source Branch
+                    select#branch.form-control.form-control-alternative(name="branch")
+                      option(value)
+                        | --select Branch--
+                      each b in branches 
+                        option(value=b.id)
+                          =b.name 
+              .form-group.focused
+                label.form-control-label Item Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description') 
+            hr.my-3
+            h6.heading-small.text-muted.mb-4 Customer information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='custName') Customer Name
+                    input#custName.form-control.form-control-alternative(type='text' placeholder='Customer Name' name='custName' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='custPhone') Customer Phone
+                    input#custPhone.form-control.form-control-alternative(type='text' placeholder='Customer Phone' value='' name='custPhone' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='custPhone') Customer Destination
+                    input#custDestination.form-control.form-control-alternative(type='text' placeholder='Customer Destination' value='' name='custDest' required)
+              .form-group.focused.form-control-label
+                label Customer Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='custdescription') 
+              .row
+                .text-center
+                  button.btn.btn-primary.my-4(type='submit') Create

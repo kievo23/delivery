@@ -1,0 +1,29 @@
+extends ../layout-min
+
+block content
+    .row
+      .card.bg-secondary.shadow        
+        .card-body
+          form(method="post",action="/branches/create")
+            h6.heading-small.text-muted.mb-4 Branch information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='input-username') name
+                    input#name.form-control.form-control-alternative(type='text' placeholder='TMall supermarket' name='name' required)
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='input-email') Location
+                    input#location.form-control.form-control-alternative(type='text' placeholder='location' name='location' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='input-first-name') Contacts
+                    input#contacts.form-control.form-control-alternative(type='text' placeholder='First name' required name='contacts')
+                
+              .form-group.focused
+                label About Me
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='details') 
+              .row
+                .text-center
+                  button.btn.btn-primary.my-4(type='submit') Create

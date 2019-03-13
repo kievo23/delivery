@@ -1,0 +1,54 @@
+extends ../layout-min
+
+block content
+    .row
+      .card.bg-secondary.shadow        
+        .card-body
+          form(method="post",action="/users/create")
+            h6.heading-small.text-muted.mb-4 User information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='name') name
+                    input#name.form-control.form-control-alternative(type='text' placeholder='TMall supermarket' name='name' required)
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='location') Location
+                    input#location.form-control.form-control-alternative(type='text' placeholder='location' name='location' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='contacts') Contacts
+                    input#contacts.form-control.form-control-alternative(type='text' placeholder='First name' value='' name='contacts' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='email') Email
+                    input#email.form-control.form-control-alternative(type='text' placeholder='Email' value='' name='email')
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='category') Category
+                    select#category.form-control.form-control-alternative(name="category" required)
+                      option(value)
+                        | --select Category--
+                      each b in categories 
+                        option(value=b.id)
+                          =b.name
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='category') Branch
+                    select#branch.form-control.form-control-alternative(name="branch")
+                      option(value)
+                        | --select Branch--
+                      each b in branches 
+                        option(value=b.id)
+                          =b.name 
+                .col-lg-12
+                  .form-group.focused
+                    label.form-control-label(for='password') Password
+                    input#password.form-control.form-control-alternative(type='password' placeholder='Password' name='password')
+              .form-group.focused
+                label Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description') 
+              .row
+                .text-center
+                  button.btn.btn-primary.my-4(type='submit') Create

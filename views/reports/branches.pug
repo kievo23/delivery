@@ -1,0 +1,59 @@
+extends ../layout
+block content
+    .row
+      .card.shadow
+        .card-header.border-0
+          .row
+            .col-xl-4
+              h3.mb-0 
+                =subtitle
+          .row
+            .col-xl-12.text-center
+                  p.mt-0.mb-1
+                    i.fas.fa-user-ninja                
+                      =head.name
+                  p.mt-0.mb-1
+                    i.fas.fa-phone 
+                      =head.contacts
+                  p.mt-0.mb-1
+                    i.ni.ni-pin-3 
+                      =head.location              
+        .table-responsive
+          table.table.align-items-center.table-flush
+            thead.thead-light
+              tr
+                th(scope='col') Code
+                th(scope='col') Name
+                th(scope='col') Source
+                th(scope='col') Destination
+                th(scope='col') Created At
+                th(scope='col') Delivered
+                th(scope='col') Actions
+            tbody
+              if(data)
+                each d in data
+                  tr
+                    td.pb-2.pt-2(scope='col')
+                      =d.productCode
+                    td
+                      =d.name
+                    td
+                      if(d.branchId)
+                        =d.branch.name 
+                    td
+                      =d.destCustomerDest 
+                    td
+                      =d.created_at
+                    td
+                      =d.delivered
+                    td
+                      
+                      a.action(href='#' onclick="return confirm('are you sure you want to activate this branch?')" title='Product Delivered')
+                        i.fas.fa-check
+                      a.action(href='/items/'+d.id  title='View Product')
+                        i.fas.fa-eye
+                      a.action(href='/items/edit/'+d.id  title='Edit Product') 
+                        i.fas.fa-edit                    
+                      a.action(href='#' onclick="return confirm('are you sure you want to delete this branch?')"  title='Delete Product') 
+                        i.fas.fa-trash
+                

@@ -1,0 +1,30 @@
+extends ../layout-min
+
+block content
+    .row
+      .card.bg-secondary.shadow        
+        .card-body
+          form(method="post",action="/branches/update/"+data.id)
+            h6.heading-small.text-muted.mb-4 Branch information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='input-username') name
+                    input#name.form-control.form-control-alternative(type='text' name='name' value=data.name)
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='input-email') Location
+                    input#location.form-control.form-control-alternative(type='text' name='location',value=data.location)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='input-first-name') Contacts
+                    input#contacts.form-control.form-control-alternative(type='text' name='contacts',value=data.contacts)
+                
+              .form-group.focused
+                label About Me
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='details') 
+                  =data.details
+              .row
+                .text-center
+                  button.btn.btn-primary.my-4(type='submit') Update

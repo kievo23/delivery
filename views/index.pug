@@ -1,0 +1,75 @@
+extends layout
+
+block content
+    .row        
+        .card-body
+          .row
+            .col-md-4
+              h6.heading-small.text-muted.mb-4 Search By Branch
+              form(method="post",action="/reports/branches")              
+                .row
+                  .col-lg-12
+                    .form-group.focused
+                      label.form-control-label(for='category') Source Branch
+                      select#branch.form-control.form-control-alternative(name="branch")
+                        option(value)
+                          | --select Branch--
+                        each b in branches 
+                          option(value=b.id)
+                            =b.name 
+                    .form-group
+                      .input-group.input-group-alternative
+                        .input-group-prepend
+                          span.input-group-text
+                            i.ni.ni-calendar-grid-58
+                        input.form-control.datepicker(placeholder='Select date' type='text' value='03/12/2019' name='date')
+ 
+                .row
+                  .text-center
+                    button.btn.btn-primary.my-4(type='submit') Search
+            .col-md-4
+              h6.heading-small.text-muted.mb-4 Search By Manager
+              form(method="post",action="/reports/managers")              
+                .row
+                  .col-lg-12
+                    .form-group.focused
+                      label.form-control-label(for='category') Source Manager
+                      select#branch.form-control.form-control-alternative(name="manager")
+                        option(value)
+                          | --select Manager--
+                        each b in managers 
+                          option(value=b.id)
+                            =b.name 
+                    .form-group
+                      .input-group.input-group-alternative
+                        .input-group-prepend
+                          span.input-group-text
+                            i.ni.ni-calendar-grid-58
+                        input.form-control.datepicker(placeholder='Select date' type='text' value='' name='date')
+
+                .row
+                  .text-center
+                    button.btn.btn-primary.my-4(type='submit') Search
+            .col-md-4
+              h6.heading-small.text-muted.mb-4 Search By Driver
+              form(method="post",action="/reports/couriers")              
+                .row
+                  .col-lg-12
+                    .form-group.focused
+                      label.form-control-label(for='category') Source Driver
+                      select#courier.form-control.form-control-alternative(name="courier")
+                        option(value)
+                          | --select Driver--
+                        each b in drivers 
+                          option(value=b.id)
+                            =b.name
+                    .form-group
+                      .input-group.input-group-alternative
+                        .input-group-prepend
+                          span.input-group-text
+                            i.ni.ni-calendar-grid-58
+                        input.form-control.datepicker(placeholder='Select date' type='text' value='03/12/2019' name='date')
+ 
+                .row
+                  .text-center
+                    button.btn.btn-primary.my-4(type='submit') Search
