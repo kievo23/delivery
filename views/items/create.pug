@@ -56,6 +56,15 @@ block content
                   .form-group.focused
                     label.form-control-label(for='custPhone') Customer Destination
                     input#custDestination.form-control.form-control-alternative(type='text' placeholder='Customer Destination' value='' name='custDest' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='category') Route
+                    select#branch.form-control.form-control-alternative(name="route")
+                      option(value)
+                        | --select Branch--
+                      each b in routes 
+                        option(value=b.id)
+                          =b.name 
               .form-group.focused.form-control-label
                 label Customer Description
                 textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='custdescription') 

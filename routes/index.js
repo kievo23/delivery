@@ -14,55 +14,79 @@ const role = require('../config/role');
 const Branch = require('../models/Branches');
 const User = require('../models/Users');
 const Item = require('../models/Items');
+const Route = require('../models/Routes');
 const Category = require('../models/Category');
 
 /* GET home page. */
 router.get('/', role.auth, function(req, res, next) {
   //console.log(res.locals.loggedin);
+
   var branches = Branch.findAll();
+  var routes = Route.findAll();
   var managers = User.findAll({include: [Branch,Category],where: {categoryId: 2}});
   var drivers = User.findAll({include: [Branch,Category],where: {categoryId: 3}});
-  Promise.all([managers,drivers,branches]).then((data) => {
-    data[0].forEach((d) => {
-      //d.date = dateFormat(d.createdAt, "mmm dS, yyyy, h:MM:ss TT");
-    });
-    res.render('index', { title: 'Items', managers: data[0],drivers: data[1],branches: data[2] });
+  Promise.all([managers,drivers,branches,routes]).then((data) => {
+    res.render('index', { title: 'Items', managers: data[0],drivers: data[1],branches: data[2],routes:data[3] });
   });
 });
 
-router.post('/reports/branches',role.admin, function(req, res, next) {
+
+router.post('/reports/routes',role.admin, function(req, res, next) {
   var date = dateFormat(req.body.date, "yyyy-mm-dd");
+
   var items = Item.findAll({
     include: [Branch,{
           model: User,
           as: 'courier'
-      }],
-    where: sequelize.where(sequelize.fn('date', sequelize.col('items.createdAt')), '=', date),
-    where: {
-      branchId: req.body.branch
+      }],where: {
+      routeId: req.body.route,
+      createdAt: new Date(date)
+    }
+  });
+  var route = Route.findByPk(req.body.route);
+  var couriers = User.findAll({include: [Branch,Category],where: {categoryId: 3}});
+  Promise.all([items,route,couriers]).then((data)=> {
+    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Route",couriers:data[2]})
+  });
+});
+
+
+router.post('/reports/branches',role.admin, function(req, res, next) {
+  var date = dateFormat(req.body.date, "yyyy-mm-dd");
+
+  var items = Item.findAll({
+    include: [Branch,{
+          model: User,
+          as: 'courier'
+      }],where: {
+      branchId: req.body.branch,
+      createdAt: new Date(date)
     }
   });
   var branch = Branch.findByPk(req.body.branch);
-  Promise.all([items,branch]).then((data)=> {
-    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Branch"})
+  var couriers = User.findAll({include: [Branch,Category],where: {categoryId: 3}});
+  Promise.all([items,branch,couriers]).then((data)=> {
+    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Branch",couriers: data[2]})
   });
 });
 
 router.post('/reports/managers',role.admin, function(req, res, next) {
   var date = dateFormat(req.body.date, "yyyy-mm-dd");
+  console.log(req.body.date);
   var items = Item.findAll({
     include: [Branch,{
           model: User,
           as: 'courier'
       }],
-    where: sequelize.where(sequelize.fn('date', sequelize.col('items.createdAt')), '=', date),
     where: {
-      managerId: req.body.manager
+      managerId: req.body.manager,
+      createdAt: new Date(date)
     }
   });
   var user = User.findByPk(req.body.manager);
-  Promise.all([items,user]).then((data)=> {
-    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Manager"})
+  var couriers = User.findAll({include: [Branch,Category],where: {categoryId: 3}});
+  Promise.all([items,user,couriers]).then((data)=> {
+    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Manager",couriers: data[2]})
   });
 });
 
@@ -73,14 +97,15 @@ router.post('/reports/couriers',role.admin, function(req, res, next) {
           model: User,
           as: 'courier'
       }],
-    where: sequelize.where(sequelize.fn('date', sequelize.col('items.assignedOn')), '=', date),
     where: {
-      courierId: req.body.courier
+      courierId: req.body.courier,
+      createdAt: new Date(date)
     }
   });
   var user = User.findByPk(req.body.courier);
-  Promise.all([items,user]).then((data)=> {
-    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Courier"})
+  var couriers = User.findAll({include: [Branch,Category],where: {categoryId: 3}});
+  Promise.all([items,user,couriers]).then((data)=> {
+    res.render('reports/branches',{data: data[0], head: data[1], subtitle: "Courier", couriers: data[2]})
   });
 });
 
@@ -109,5 +134,34 @@ router.get('/logout', role.auth, function(req, res){
   res.redirect("/login");
   });
 });
+
+router.get('/createData', (req, res) => {
+
+  Category.create({
+    id: 1,
+    name: "Admin"
+  });
+
+  Category.create({
+    id: 2,
+    name: "Manager"
+  });
+
+  Category.create({
+    id: 3,
+    name: "Driver"
+  });
+
+  User.create({
+    id: 1,
+    name: 'admin',
+    location: 'roysambu',
+    contacts: '0710345130',
+    categoryId: 1,
+    email: 'admin@gmail.com',
+    password: '1234',
+    description: 'kelvin chege'
+  });
+})
 
 module.exports = router;

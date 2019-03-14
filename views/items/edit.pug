@@ -1,54 +1,83 @@
 extends ../layout-min
 
 block content
-  .header.bg-gradient-primary.pb-5.pt-5.pt-md-6
-
-  .container-fluid.mt--12
     .row
       .card.bg-secondary.shadow        
         .card-body
-          form(method="post",action="/users/update/"+user.id)
-            h6.heading-small.text-muted.mb-4 User information
+          form(method="post",action="/items/update/"+item.id)
+            h6.heading-small.text-muted.mb-4 Product information
             .pl-lg-4
               .row
                 .col-lg-4
                   .form-group.focused
-                    label.form-control-label(for='name') name
-                    input#name.form-control.form-control-alternative(type='text' placeholder='TMall supermarket' name='name' required value=user.name)
+                    label.form-control-label(for='name') Name
+                    input#name.form-control.form-control-alternative(type='text' placeholder='Dispenser' name='name' value=item.name required)
                 .col-lg-4
                   .form-group
-                    label.form-control-label(for='location') Location
-                    input#location.form-control.form-control-alternative(type='text' placeholder='location' name='location' required value=user.location)
+                    label.form-control-label(for='quantity') Quantity
+                    input#quantity.form-control.form-control-alternative(type='text' placeholder='Quantity' name='quantity' required value=item.quantity)
                 .col-lg-4
                   .form-group.focused
-                    label.form-control-label(for='contacts') Contacts
-                    input#contacts.form-control.form-control-alternative(type='text' placeholder='First name' name='contacts' required value=user.contacts)
+                    label.form-control-label(for='productcode') productCode
+                    input#productcode.form-control.form-control-alternative(type='text' placeholder='Product Code' name='productcode' required value=item.productCode)
                 .col-lg-4
                   .form-group.focused
-                    label.form-control-label(for='email') Email
-                    input#email.form-control.form-control-alternative(type='text' placeholder='Email' name='email' value=user.email)
+                    label.form-control-label(for='productcode') Price
+                    input#price.form-control.form-control-alternative(type='text' placeholder='Price' name='price' required value=item.price)
                 .col-lg-4
                   .form-group.focused
-                    label.form-control-label(for='category') Category
-                    select#category.form-control.form-control-alternative(name="category" required)
-                      option(value=user.category.id)
-                        =user.category.name
-                        each b in categories 
-                          option(value=b.id)
-                            =b.name
+                    label.form-control-label(for='photo') Photo
+                    input#photo.form-control.form-control-alternative(type='file')
                 .col-lg-4
                   .form-group.focused
-                    label.form-control-label(for='branch') Branch
+                    label.form-control-label(for='category') Source Branch
                     select#branch.form-control.form-control-alternative(name="branch")
-                      option(value=user.branch.id)
-                        =user.branch.name
+                      if(item.branchId)
+                        option(value=item.branch.id)
+                          =item.branch.name
+                      else
+                        option(value)
+                        | --select Branch--
                       each b in branches 
                         option(value=b.id)
-                          =b.name                 
+                          =b.name 
               .form-group.focused
-                label Description
-                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description') 
-                  =user.description
+                label.form-control-label Item Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description')
+                  =item.description
+            hr.my-3
+            h6.heading-small.text-muted.mb-4 Customer information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='custName') Customer Name
+                    input#custName.form-control.form-control-alternative(type='text' value=item.destCustomerName name='custName' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='custPhone') Customer Phone
+                    input#custPhone.form-control.form-control-alternative(type='text' placeholder='Customer Phone' value=item.destCustomerPhone name='custPhone' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='custPhone') Customer Destination
+                    input#custDestination.form-control.form-control-alternative(type='text' placeholder='Customer Destination' value=item.destCustomerDest name='custDest' required)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='route') Route
+                    select#route.form-control.form-control-alternative(name="route")
+                      if(item.routeId)
+                        option(value=item.route.id)
+                          =item.route.name
+                      else
+                        option(value)
+                        | --select Route--
+                      each b in routes 
+                        option(value=b.id)
+                          =b.name 
+              .form-group.focused.form-control-label
+                label Customer Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='custdescription')
+                  =item.destCustomerDetails 
               .row
                 .text-center
-                  button.btn.btn-primary.my-4(type='submit') Create
+                  button.btn.btn-primary.my-4(type='submit') Update

@@ -28,6 +28,8 @@ block content
                 th(scope='col') Destination
                 th(scope='col') Created At
                 th(scope='col') Delivered
+                if(user.categoryId == 1)
+                  th(scope='col') Courier
                 th(scope='col') Actions
             tbody
               if(data)
@@ -46,13 +48,31 @@ block content
                       =d.created_at
                     td
                       =d.delivered
-                    td
-                      
-                      a.action(href='#' onclick="return confirm('are you sure you want to activate this branch?')" title='Product Delivered')
+                    if(user.categoryId == 1)
+                      td.pb-1.pt-2
+                          form(method='post',action='/items/assign/'+d.id)
+                            .input-group
+                              select#courier.form-control.form-control-sm(name="courier" required)
+                                if(d.courierId)
+                                  option(value=d.courier.id)
+                                    =d.courier.name
+                                else 
+                                  option(value)
+                                    | --select courier --
+                                each b in couriers 
+                                  option(value=b.id)
+                                    =b.name 
+                              .input-group-append
+                                .input-group-text.p-0
+                                  button.btn.btn-icon.btn-2.btn-primary.btn-sm(type='submit')
+                                    span.btn-inner--icon
+                                      i.ni.ni-pin-3
+                    td                      
+                      a.action(href='/items/delivered/'+d.id onclick="return confirm('Is this item delivered?')" title='Delivered?')
                         i.fas.fa-check
-                      a.action(href='/items/'+d.id  title='View Product')
+                      a.action(href='/items/'+d.id title='View Product')
                         i.fas.fa-eye
-                      a.action(href='/items/edit/'+d.id  title='Edit Product') 
+                      a.action(href='/items/edit/'+d.id title='Edit Product') 
                         i.fas.fa-edit                    
                       a.action(href='#' onclick="return confirm('are you sure you want to delete this branch?')"  title='Delete Product') 
                         i.fas.fa-trash

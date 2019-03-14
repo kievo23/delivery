@@ -39,7 +39,7 @@ block content
                   td.pb-1.pt-2
                       form(method='post',action='/items/assign/'+d.id)
                         .input-group
-                          select#courier.form-control.form-control-sm(name="courier")
+                          select#courier.form-control.form-control-sm(name="courier" required)
                             if(d.courierId)
                               option(value=d.courier.id)
                                 =d.courier.name

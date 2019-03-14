@@ -20,6 +20,8 @@ connection.authenticate()
         console.log('fail : Unable to connect to db\n',err)
     })
 
-
+connection.sync({
+  //force:true
+});
 
 module.exports = connection;

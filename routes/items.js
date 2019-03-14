@@ -7,6 +7,7 @@ const now = new Date();
 const Branch = require('../models/Branches');
 const User = require('../models/Users');
 const Item = require('../models/Items');
+const Route = require('../models/Routes');
 const Category = require('../models/Category');
 
 const role = require('../config/role');
@@ -58,8 +59,9 @@ router.get('/unassigned',role.auth, function(req, res, next) {
 router.get('/create',role.manager, function(req, res, next) {
   var branches = Branch.findAll();
   var categories = Category.findAll();
-  Promise.all([branches,categories]).then((data) => {
-    res.render('items/create', { title: 'Add User', branches: data[0], categories: data[1] });
+  var routes = Route.findAll();
+  Promise.all([branches,categories,routes]).then((data) => {
+    res.render('items/create', { title: 'Add User', branches: data[0], categories: data[1],routes: data[2] });
   });
 });
 
@@ -76,7 +78,13 @@ router.post('/assign/:id', role.admin, (req,res) => {
 });
 
 router.get('/delivered/:id',role.manager, (req,res) => {
-  Item.findByPk(req.params.id).then(data => {
+  var promise = null;
+  if(req.user.role == 1){
+    promise = Item.findByPk(req.params.id);
+  }else{
+    promise = Item.findOne({where: {id: req.params.id, managerId: req.user.id}});
+  }
+  promise.then(data => {
     //console.log(data);
     if(data.delivered == true){
       data.delivered = false;
@@ -92,7 +100,7 @@ router.get('/delivered/:id',role.manager, (req,res) => {
 });
 
 router.post('/create',role.manager, function(req, res, next) {
-  Item.create({
+  let data = {
     name: req.body.name,
     quantity: req.body.quantity,
     productCode: req.body.productcode,
@@ -102,8 +110,15 @@ router.post('/create',role.manager, function(req, res, next) {
     destCustomerPhone: req.body.custPhone,
     destCustomerDest: req.body.custDest,
     branchId: req.body.branch,
-    destCustomerDetails: req.body.custdescription
-  }).then((rst) => {
+    managerId: req.user.id,
+    routeId: req.body.route,
+    destCustomerDetails: req.body.custdescription,
+    //managerId: req.body.
+  }
+  if(req.body.route != ''){
+    data.routeId = req.body.route;
+  }
+  Item.create(data).then((rst) => {
     res.redirect('/items');
   }).catch((x) => {
     console.log(x);
@@ -112,29 +127,35 @@ router.post('/create',role.manager, function(req, res, next) {
 });
 
 router.get('/edit/:id',role.manager, (req, res) => {
-  var user = User.findByPk(req.params.id,{include: [Branch,Category]});
+  var item = Item.findByPk(req.params.id , {include: [Branch,Route]});
   var branches = Branch.findAll();
-  var categories = Category.findAll();
-  Promise.all([user,branches,categories]).then((data)=> {
-    res.render('items/edit',{user: data[0], branches:data[1], categories: data[2], title: "edit "+ data[0].name})
+  var routes = Route.findAll();
+  Promise.all([item,branches,routes]).then((data)=> {
+    res.render('items/edit',{item: data[0], branches:data[1], routes: data[2],title: "edit "+ data[0].name})
   });
 });
 
 router.post('/update/:id',role.manager, (req, res, next) => {
-  User.update({
+  let data = {
     name: req.body.name,
     location: req.body.location,
     contacts: req.body.contacts,
     categoryId: req.body.category,
-    branchId: parseInt(req.body.branch),
+    branchId: req.body.branch,
     email: req.body.email,
+    routeId: req.body.route,
+    managerId: req.user.id,
     description: req.body.description
-  },{
+  }
+  if(req.body.route != ''){
+    data.routeId = req.body.route;
+  }
+  Item.update(data,{
     where: {
       id: req.params.id
     }
   })
-  .then((data)=> {
+  .then((data) => {
     res.redirect('/items')
   })
   .catch(next)

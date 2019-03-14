@@ -23,7 +23,7 @@ block content
             tbody
               each d in data
                 tr
-                  td.pb-3(scope='col')
+                  td.pb-2.pt-1(scope='col')
                     =d.name
                   td
                     =d.location 
@@ -34,7 +34,8 @@ block content
                   td
                     =d.category.name 
                   td
-                    =d.branch.name
+                    if d.branchId
+                      =d.branch.name
                   td
                     a.action(href='#' onclick="return confirm('are you sure you want to activate this branch?')")
                       i.fas.fa-user-check

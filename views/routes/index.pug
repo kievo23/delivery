@@ -1,0 +1,34 @@
+extends ../layout
+block content
+    .row
+      .card.shadow
+        .card-header.border-0
+          .row
+            .col-xl-4
+              h3.mb-0 Routes
+            .col-xl-6.text-right
+              a.btn.btn-primary(href="/routes/create")
+                |  Create Route
+        .table-responsive
+          table.table.align-items-center.table-flush
+            thead.thead-light
+              tr
+                th(scope='col') Name
+                th(scope='col') Details
+                th(scope='col') Actions
+                th(scope='col')
+            tbody
+              each d in data
+                tr
+                  td.pb-2.pt-1(scope='col')
+                    =d.name 
+                  td
+                    =d.details 
+                  td
+                    a.action(href='/routes/edit/'+ d.id) 
+                      i.fas.fa-edit
+                    a.action(href='#' onclick="return confirm('are you sure you want to delete this route?')") 
+                      i.fas.fa-trash
+                    a.action(href='#' onclick="return confirm('are you sure you want to activate this route?')")
+                      i.fas.fa-check-circle
+              

@@ -8,7 +8,7 @@ const User = sequelize.define('users',{
     name: {type: Sequelize.STRING,allowNull: false},
     location: Sequelize.STRING,
     contacts: Sequelize.STRING,
-    email: {type: Sequelize.TEXT, allowNull: true},
+    email: {type: Sequelize.STRING, allowNull: true, unique: true},
     description: {
       type: Sequelize.TEXT,
       allowNull: true,

@@ -39,17 +39,20 @@ router.get('/create',role.admin, function(req, res, next) {
 
 router.post('/create',role.admin, function(req, res, next) {
   //console.log(req.body);
-  var password = bcrypt.hashSync(req.body.password, 10);
-  User.create({
+  var data = {
     name: req.body.name,
     location: req.body.location,
     contacts: req.body.contacts,
     categoryId: req.body.category,
-    branchId: parseInt(req.body.branch),
     email: req.body.email,
     password: req.body.password,
     description: req.body.description
-  }).then((rst) => {
+  }
+  if(req.body.branch != ''){
+    data.branchId = req.body.branch;
+  }
+
+  User.create(data).then((rst) => {
     res.redirect('/users');
   }).catch((x) => {
     console.log(x);
@@ -67,15 +70,19 @@ router.get('/edit/:id',role.admin, (req, res) => {
 });
 
 router.post('/update/:id',role.admin, (req, res, next) => {
-  User.update({
+  var data = {
     name: req.body.name,
     location: req.body.location,
     contacts: req.body.contacts,
     categoryId: req.body.category,
-    branchId: parseInt(req.body.branch),
     email: req.body.email,
+    password: req.body.password,
     description: req.body.description
-  },{
+  }
+  if(req.body.branch != ''){
+    data.branchId = req.body.branch;
+  }
+  User.update(data,{
     where: {
       id: req.params.id
     }

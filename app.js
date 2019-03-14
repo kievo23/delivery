@@ -7,10 +7,19 @@ var flash = require('connect-flash');
 
 var passport = require('./config/auth');
 
+//MODELS
+const Branch = require('./models/Branches');
+const User = require('./models/Users');
+const Item = require('./models/Items');
+const Route = require('./models/Routes');
+const Category = require('./models/Category');
+
+//Routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var branchesRouter = require('./routes/branches');
 var itemsRouter = require('./routes/items');
+var routesRouter = require('./routes/routes');
 
 var app = express();
 
@@ -33,31 +42,49 @@ app.use(passport.session());
 app.use(flash());
 
 
-// error handler
+// MIDDLEWARE
 app.use(function( req, res, next) {
-  var loggedin = false;
-  if(req.user){
-    loggedin = true;
-  }
+  let couriers = User.count({where: {categoryId: 3}});
+  let managers = User.count({where: {categoryId: 2}});
+  let unassigned = Item.count({ where: { courierId: null}});
+  let totalOrders = Item.count({});
+  let deliveredOrders = Item.count({where: { delivered: true}});
+  let routes = Route.count({});
+  let branches = Branch.count({});
+  Promise.all([couriers,managers,unassigned,totalOrders,deliveredOrders,routes,branches]).then((data) => {
+    var loggedin = false;
+    if(req.user){
+      loggedin = true;
+    }
 
-  // set locals, only providing error in development
-  res.locals.success_msg = req.flash('success_msg') || null;
-  res.locals.error_msg = req.flash('error_msg') || null;
-  res.locals.error = req.flash('error') || null;
-  //res.locals.message = err.message;
-  res.locals.user = req.user || {};
-  res.locals.loggedin = loggedin;
-  //res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.log("MIDDLEWARE IS WORKING!!!");
-  // render the error page
-  //res.status(err.status || 500);
-  next();
+    res.locals.allcouriers = data[0];
+    res.locals.allmanagers = data[1];
+    res.locals.unassigned = data[2];
+    res.locals.totalOrders = data[3];
+    res.locals.deliveredOrders = data[4];
+    res.locals.allroutes = data[5];
+    res.locals.allbranches = data[6];
+
+    // set locals, only providing error in development
+    res.locals.success_msg = req.flash('success_msg') || null;
+    res.locals.error_msg = req.flash('error_msg') || null;
+    res.locals.error = req.flash('error') || null;
+    //res.locals.message = err.message;
+    res.locals.user = req.user || {};
+    res.locals.loggedin = loggedin;
+    //res.locals.error = req.app.get('env') === 'development' ? err : {};
+    //console.log("MIDDLEWARE IS WORKING!!!");
+    // render the error page
+    //res.status(err.status || 500);
+    next();
+  });
 });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/branches', branchesRouter);
 app.use('/items', itemsRouter);
+app.use('/routes', routesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

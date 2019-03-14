@@ -3,6 +3,7 @@ const dateFormat = require('dateformat');
 const sequelize = require('../config/db');
 const Branch = require('./Branches');
 const User = require('./Users');
+const Route = require('./Routes');
 
 const Item = sequelize.define('items',{
     name: {type: Sequelize.STRING,allowNull: false},
@@ -16,10 +17,11 @@ const Item = sequelize.define('items',{
     destCustomerDest: Sequelize.STRING,
     destCustomerDetails: Sequelize.TEXT,
     delivered: { type: Sequelize.BOOLEAN,defaultValue: false},
-    assignedOn: { type: Sequelize.DATE,allowNull: true},
-    deliveredOn: { type: Sequelize.DATE,allowNull: true}
+    assignedOn: { type: Sequelize.DATEONLY,allowNull: true},
+    deliveredOn: { type: Sequelize.DATEONLY,allowNull: true},
+    createdAt: Sequelize.DATEONLY,
+    updatedAt: Sequelize.DATEONLY
   },{
-    timestamps: true, // timestamps will now be true
     getterMethods:{
       created_at: function(){
         return dateFormat(this.createdAt, "mmm dS, yyyy, h:MM:ss TT");
@@ -29,6 +31,7 @@ const Item = sequelize.define('items',{
 );
 
 Item.belongsTo(Branch, {foreignKey: 'branchId'});
+Item.belongsTo(Route, {foreignKey: 'routeId'});
 Item.belongsTo(User, {foreignKey: 'courierId', as: 'courier', constraints: false});
 Item.belongsTo(User, {foreignKey: 'managerId', as: 'manager', constraints: false});
 
