@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var flash = require('connect-flash');
+var cookieSession = require('cookie-session');
 
 var passport = require('./config/auth');
 
@@ -39,7 +40,7 @@ app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(cookieSession({ secret: 'tuskys', cookie: { maxAge: 60 * 60 * 1000 }}));
 app.use(flash());
 
 
