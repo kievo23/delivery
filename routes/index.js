@@ -46,7 +46,7 @@ router.post('/reports/routes',role.admin, function(req, res, next) {
   //var couriers = Vehicle.findAll({});
   var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
    percentage,branches.name as branchName FROM `vehicles` \
-   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+   LEFT Join (SELECT SUM(items.size) as capacity,items.vehicleId FROM `items`\
     WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
      on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
     { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
@@ -70,7 +70,7 @@ router.post('/reports/branches',role.admin, function(req, res, next) {
   //var couriers = Vehicle.findAll({});
   var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
    percentage,branches.name as branchName FROM `vehicles` \
-   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+   LEFT Join (SELECT SUM(items.size) as capacity,items.vehicleId FROM `items`\
     WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
      on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
     { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
@@ -94,7 +94,7 @@ router.post('/reports/managers',role.admin, function(req, res, next) {
   //var couriers = Vehicle.findAll({});
   var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
    percentage,branches.name as branchName FROM `vehicles` \
-   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+   LEFT Join (SELECT SUM(items.size) as capacity,items.vehicleId FROM `items`\
     WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
      on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
     { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
@@ -117,7 +117,7 @@ router.post('/reports/couriers',role.admin, function(req, res, next) {
   //var couriers = Vehicle.findAll({});
   var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
    percentage,branches.name as branchName FROM `vehicles` \
-   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+   LEFT Join (SELECT SUM(items.size) as capacity,items.vehicleId FROM `items`\
     WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
      on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
     { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
