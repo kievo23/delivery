@@ -29,14 +29,53 @@ router.get('/',role.manager, function(req, res, next) {
 
   //var couriers = Vehicle.findAll({include: [Branch]});
   var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
-   percentage,branches.name as branchName FROM `vehicles` \
-   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
-    WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
+   percentage,branches.name as branchName FROM vehicles \
+   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM items\
+    WHERE DATE(assignedOn) = :date GROUP BY items.vehicleId)as compute \
      on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
     { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
   )
   Promise.all([items,couriers]).then((data) => {
     //console.log(data[1]);
+    res.render('items/index', { title: 'Items', data: data[0], vehicles: data[1] });
+  });
+});
+
+router.get('/pending',role.auth, function(req, res, next) {
+  //var items = Item.findAll({include: [{ all: true }]});
+  var date = dateFormat(new Date(), "yyyy-mm-dd");
+    if(req.user.categoryId == 2){
+      var items = Item.findAll({include: [Branch,Vehicle,Route],
+        where:{
+          managerId: req.user.id,
+          vehicleId: {
+            [Op.ne]: null
+          },
+          delivered: {
+            [Op.or]: [null,false]
+          }
+        }});
+    }else{
+      var items = Item.findAll({include: [Branch,Vehicle,Route], where: {
+          vehicleId: {
+            [Op.ne]: null
+          },
+          delivered: {
+            [Op.or]: [null,false]
+          }
+        }});
+    }
+  //var couriers = User.findAll({where: {categoryId: 3}});
+  var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
+   percentage,branches.name as branchName FROM `vehicles` \
+   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+    WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
+     on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
+    { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
+  );
+  Promise.all([items,couriers]).then((data) => {
+
+    //console.log(data);
     res.render('items/index', { title: 'Items', data: data[0], vehicles: data[1] });
   });
 });
