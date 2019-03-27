@@ -3,56 +3,70 @@ var router = express.Router();
 const bcrypt = require('bcryptjs');
 const dateFormat = require('dateformat');
 const Sequelize = require("sequelize");
+const sequelize = require('../config/db');
 const now = new Date();
 const Branch = require('../models/Branches');
 const User = require('../models/Users');
 const Item = require('../models/Items');
 const Route = require('../models/Routes');
 const Category = require('../models/Category');
+const Vehicle = require('../models/Vehicles');
 
 const role = require('../config/role');
 
 /* GET home page. */
 router.get('/',role.manager, function(req, res, next) {
   //var items = Item.findAll({include: [{ all: true }]});
+  var date = dateFormat(new Date(), "yyyy-mm-dd");
   if(req.user.categoryId == 2){
-    var items = Item.findAll({include: [Branch,{
-          model: User,
-          as: 'courier'
-      }],
+    var items = Item.findAll({include: [Branch,Vehicle,Route],
       where:{
         managerId: req.user.id
       }});
   }else{
-    var items = Item.findAll({include: [Branch,{
-          model: User,
-          as: 'courier'
-      }]});
+    var items = Item.findAll({include: [Branch,Vehicle,Route]});
   }
 
-  var couriers = User.findAll({where: {categoryId: 3}});
+  //var couriers = Vehicle.findAll({include: [Branch]});
+  var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
+   percentage,branches.name as branchName FROM `vehicles` \
+   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+    WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
+     on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
+    { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
+  )
   Promise.all([items,couriers]).then((data) => {
-    //console.log(res.locals);
-    res.render('items/index', { title: 'Items', data: data[0], couriers: data[1] });
+    //console.log(data[1]);
+    res.render('items/index', { title: 'Items', data: data[0], vehicles: data[1] });
   });
 });
 
 router.get('/unassigned',role.auth, function(req, res, next) {
   //var items = Item.findAll({include: [{ all: true }]});
-  var items = Item.findAll({include: [Branch,{
-        model: User,
-        as: 'courier'
-    }], where: {
-      courierId: null
-    }});
-  var couriers = User.findAll({where: {categoryId: 3}});
+  var date = dateFormat(new Date(), "yyyy-mm-dd");
+    if(req.user.categoryId == 2){
+      var items = Item.findAll({include: [Branch,Vehicle,Route],
+        where:{
+          managerId: req.user.id,
+          vehicleId: null
+        }});
+    }else{
+      var items = Item.findAll({include: [Branch,Vehicle,Route], where: {
+          vehicleId: null
+        }});
+    }
+  //var couriers = User.findAll({where: {categoryId: 3}});
+  var couriers = sequelize.query('SELECT vehicles.*,round(compute.capacity/ vehicles.size * 100) as\
+   percentage,branches.name as branchName FROM `vehicles` \
+   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items`\
+    WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
+     on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id',
+    { replacements: { date: date }, type: sequelize.QueryTypes.SELECT }
+  );
   Promise.all([items,couriers]).then((data) => {
-    console.log(data);
-    data[0].forEach((d) => {
-      d.date = dateFormat(d.createdAt, "mmm dS, yyyy, h:MM:ss TT");
-    });
+
     //console.log(data);
-    res.render('items/index', { title: 'Items', data: data[0], couriers: data[1] });
+    res.render('items/index', { title: 'Items', data: data[0], vehicles: data[1] });
   });
 });
 
@@ -66,13 +80,45 @@ router.get('/create',role.manager, function(req, res, next) {
 });
 
 router.post('/assign/:id', role.admin, (req,res) => {
+  var date = dateFormat(new Date(), "yyyy-mm-dd");
+  var couriers = sequelize.query('SELECT vehicles.size,round(compute.capacity/ vehicles.size * 100) as \
+   percentage,compute.capacity, branches.name as branchName FROM `vehicles` \
+   LEFT Join (SELECT sum(items.size) as capacity,items.vehicleId FROM `items` \
+    WHERE DATE(`assignedOn`) = :date GROUP BY items.vehicleId)as compute \
+     on compute.vehicleId=vehicles.id LEFT JOIN branches on branches.id=vehicles.id WHERE vehicles.id = :vehicleId',
+    { replacements: { date: date, vehicleId: parseInt(req.body.courier) }, type: sequelize.QueryTypes.SELECT }
+  );
+  var item = Item.findByPk(req.params.id);
+  Promise.all([couriers,item]).then((data) => {
+      //console.log(data[1].size);
+      //console.log(data[0][0].capacity);
+      //console.log(data[0][0].size);
+      //console.log((parseInt(data[1].size) + parseInt(data[0][0].capacity)) / parseInt(data[0][0].size) * 100);
+      if( Math.round((parseInt(data[1].size) + parseInt(data[0][0].capacity)) / parseInt(data[0][0].size) * 100) > 90){
+        req.flash('error','Vehicle is at capacity');
+        res.redirect('/items');
+      }else{
+        data[1].vehicleId = parseInt(req.body.courier);
+        data[1].assignedOn = now;
+        data[1].deliveryTime = req.body.deliveryTime;
+        data[1].save(function(err){
+            console.log("assigned order");
+        });
+        req.flash('success','Item assigned successfully');
+        res.redirect('/items');
+      }
+  });
+});
+
+router.get('/unassign/:id', role.admin, (req,res) => {
   Item.findByPk(req.params.id).then((data) => {
     //console.log(data);
-    data.courierId = parseInt(req.body.courier);
-    data.assignedOn = now;
+    data.vehicleId = null;
+    data.assignedOn = null;
     data.save(function(err){
 
     });
+    req.flash('warning','Item unassigned successfully');
     res.redirect('/items');
   });
 });
@@ -87,8 +133,10 @@ router.get('/delivered/:id',role.manager, (req,res) => {
   promise.then(data => {
     //console.log(data);
     if(data.delivered == true){
+      req.flash('warning','Item marked as not delivered');
       data.delivered = false;
     }else{
+      req.flash('success','Item marked as delivered');
       data.delivered = true;
     }
     data.deliveredOn = now;
@@ -106,6 +154,7 @@ router.post('/create',role.manager, function(req, res, next) {
     productCode: req.body.productcode,
     description: req.body.description,
     price: req.body.price,
+    size: req.body.size,
     destCustomerName: req.body.custName,
     destCustomerPhone: req.body.custPhone,
     destCustomerDest: req.body.custDest,
@@ -143,6 +192,7 @@ router.post('/update/:id',role.manager, (req, res, next) => {
     categoryId: req.body.category,
     branchId: req.body.branch,
     email: req.body.email,
+    size: req.body.size,
     routeId: req.body.route,
     managerId: req.user.id,
     description: req.body.description

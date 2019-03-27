@@ -15,7 +15,7 @@ router.get('/',role.admin, function(req, res, next) {
   });
 });
 
-router.get('/managers',role.admin, function(req, res, next) {
+router.get('/managers',role.manager, function(req, res, next) {
   var users = User.findAll({include: [Branch,Category],where: {categoryId: 2}}).then((data) => {
     //console.log(data);
     res.render('users/index', { title: 'Users', data: data });
@@ -53,6 +53,7 @@ router.post('/create',role.admin, function(req, res, next) {
   }
 
   User.create(data).then((rst) => {
+    req.flash('success','User Created Successfully');
     res.redirect('/users');
   }).catch((x) => {
     console.log(x);
@@ -88,6 +89,7 @@ router.post('/update/:id',role.admin, (req, res, next) => {
     }
   })
   .then((data)=> {
+    req.flash('success','User Edited successfully');
     res.redirect('/users')
   })
   .catch(next)

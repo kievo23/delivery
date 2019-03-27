@@ -33,7 +33,9 @@ head
       .col-lg-5.col-md-7
         .card.bg-secondary.shadow.border-0
           .card-body.px-lg-5.py-lg-5
-            
+            if(error)
+              .alert.alert-danger
+                =error
             form(method='post' action='/login')
               .form-group.mb-3
                 .input-group.input-group-alternative

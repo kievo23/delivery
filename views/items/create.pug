@@ -37,9 +37,15 @@ block content
                       each b in branches 
                         option(value=b.id)
                           =b.name 
-              .form-group.focused
-                label.form-control-label Item Description
-                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description') 
+              .row 
+                .col-md-4 
+                  .form-group.focused.form-control-label 
+                  label.form-control-label(for='size') Size (Cubic Meters)
+                  input#size.form-control.form-control-alternative(type='text' placeholder='Size' value='' name='size' required)
+                .col-md-8 
+                  .form-group.focused
+                    label.form-control-label Item Description
+                    textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='description') 
             hr.my-3
             h6.heading-small.text-muted.mb-4 Customer information
             .pl-lg-4
@@ -61,13 +67,14 @@ block content
                     label.form-control-label(for='category') Route
                     select#branch.form-control.form-control-alternative(name="route")
                       option(value)
-                        | --select Branch--
+                        | --select Route--
                       each b in routes 
                         option(value=b.id)
                           =b.name 
+              
               .form-group.focused.form-control-label
-                label Customer Description
-                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='custdescription') 
+                    label Customer Description
+                    textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='custdescription') 
               .row
                 .text-center
-                  button.btn.btn-primary.my-4(type='submit') Create
+                  button.btn.btn-success.my-4(type='submit') Create

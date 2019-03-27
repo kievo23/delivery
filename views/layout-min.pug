@@ -11,6 +11,7 @@ head
   link(href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet')
   // Icons
   link(href='/assets/vendor/nucleo/css/nucleo.css' rel='stylesheet')
+  link(href='/stylesheets/bootstrap-select.min.css'  rel='stylesheet')
   link(href='/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' rel='stylesheet')
   // Argon CSS
   link(type='text/css' href='/assets/css/argon.css?v=1.0.0' rel='stylesheet')
@@ -22,7 +23,7 @@ nav#sidenav-main.navbar.navbar-vertical.fixed-left.navbar-expand-md.navbar-light
       span.navbar-toggler-icon
     // Brand
     a.navbar-brand.pt-0(href='#')
-      img.navbar-brand-img(src='/assets/img/brand/blue.png' alt='...')
+      img.navbar-brand-img(src='/images/logo.png' alt='...')
     // User
     ul.nav.align-items-center.d-md-none
       li.nav-item.dropdown
@@ -80,31 +81,31 @@ nav#sidenav-main.navbar.navbar-vertical.fixed-left.navbar-expand-md.navbar-light
       ul.navbar-nav
         li.nav-item
           a.nav-link(href='/')
-            i.ni.ni-tv-2.text-primary
+            i.ni.ni-tv-2.text-green
             |  Dashboard
         li.nav-item
           a.nav-link(href='/items/unassigned')
-            i.fas.fa-file-alt.text-blue
+            i.fas.fa-file-alt.text-green
             |  Unassigned Orders
         li.nav-item
           a.nav-link(href='/items')
-            i.fas.fa-folder.text-blue
+            i.fas.fa-folder.text-green
             |  All Orders
         li.nav-item
           a.nav-link(href='/users/managers')
-            i.fas.fa-users.text-blue
+            i.fas.fa-users.text-green
             |  Managers
         li.nav-item
           a.nav-link(href='/users/couriers')
-            i.fas.fa-user-ninja.text-blue            
+            i.fas.fa-user-ninja.text-green            
             |  Drivers
         li.nav-item
           a.nav-link(href='/routes')
-            i.fas.fa-truck.text-blue
+            i.fas.fa-truck.text-green
             |  Routes
         li.nav-item
           a.nav-link(href='/branches')
-            i.ni.ni-bullet-list-67.text-blue
+            i.ni.ni-bullet-list-67.text-green
             |  Branches
         
       // Divider
@@ -155,7 +156,7 @@ nav#sidenav-main.navbar.navbar-vertical.fixed-left.navbar-expand-md.navbar-light
               i.ni.ni-user-run
               span Logout
   // Header
-  .header.bg-gradient-primary.pb-4.pt-4.pt-md-6
+  .header.bg-gradient-success.pb-4.pt-4.pt-md-6
     
   // Page content
   .container-fluid.mt--12
@@ -184,6 +185,7 @@ nav#sidenav-main.navbar.navbar-vertical.fixed-left.navbar-expand-md.navbar-light
 script(src='/assets/vendor/jquery/dist/jquery.min.js')
 script(src='/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js')
 
+script(src='/stylesheets/bootstrap-select.min.js')
 script(src='/assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')
 // Optional JS
 script(src="/assets/vendor/anchor-js/anchor.min.js")

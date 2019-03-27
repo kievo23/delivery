@@ -1,31 +1,31 @@
 extends ../layout
 block content
     .row
-      .card.shadow
+      .container-fluid
         .card-header.border-0
           .row
             .col-xl-4
               h3.mb-0 Items
             .col-xl-6.text-right
-              a.btn.btn-primary(href="/items/create")
+              a.btn.btn-success(href="/items/create")
                 |  Create Product
-        .table-responsive
-          table.table.align-items-center.table-flush
+        .table
+          table.dataTable.responsive.export#items(style='width:100%')
             thead.thead-light
               tr
-                th(scope='col') Code
                 th(scope='col') Name
                 th(scope='col') Source
                 th(scope='col') Destination
-                th(scope='col') Created At
                 th(scope='col') Courier
+                th(scope='col') Code                
+                th(scope='col') Route
+                th(scope='col') Time
+                th(scope='col') Created At
                 th(scope='col') Delivered
                 th(scope='col') Actions
             tbody
               each d in data
                 tr
-                  td.pb-2.pt-2(scope='col')
-                    =d.productCode
                   td
                     =d.name
                   td
@@ -33,36 +33,69 @@ block content
                       =d.branch.name 
                   td
                     =d.destCustomerDest 
-                  td
-                    =d.created_at
-                  
                   td.pb-1.pt-2
                       form(method='post',action='/items/assign/'+d.id)
                         .input-group
-                          select#courier.form-control.form-control-sm(name="courier" required)
-                            if(d.courierId)
-                              option(value=d.courier.id)
-                                =d.courier.name
+                          select#courier.form-control.form-control-sm.selectpicker(name="courier" data-style="btn-success" required data-live-search="true")
+                            if(d.vehicleId)
+                              option(data-content=d.vehicle.name+" <span class='badge badge-primary'>"+d.branch.name+"</span>" value=d.vehicle.id)
+                                =d.vehicle.registration
                             else 
                               option(value)
                                 | --select courier --
-                            each b in couriers 
-                              option(value=b.id)
+                            each b in vehicles 
+                              option(data-content=b.name+" "+b.registration+" ("+b.percentage+"%) <span class='badge badge-success'>"+b.branchName+"</span>" value=b.id)
                                 =b.name 
+                          .input-group
+                            input.form-control.form-control-sm.timepicker(type='text',name='deliveryTime' datetime-picker="HH:mm" enable-date="false")
+                            span.input-group-addon
+                              span.glyphicon.glyphicon-time
                           .input-group-append
                             .input-group-text.p-0
-                              button.btn.btn-icon.btn-2.btn-primary.btn-sm(type='submit')
+                              button.btn.btn-icon.btn-2.btn-success.btn-sm.btn-block(type='submit')
                                 span.btn-inner--icon
-                                  i.ni.ni-pin-3
+                                  i.ni.ni-active-40 
+                                |  Assign
+                  td(scope='col')
+                    =d.productCode                  
+                  td 
+                    =d.route.name                   
                   td
-                    =d.delivered
+                    =d.deliveryTime
+                  td
+                    =d.created_at                                   
+                  td
+                    if(d.delivered == true)
+                      | Delivered
+                    else
+                      | Pending
                   td                    
                     a.action(href='/items/delivered/'+d.id onclick="return confirm('Is this item delivered?')" title='Delivered?')
                       i.fas.fa-check
                     a.action(href='/items/'+d.id title='View Product')
                       i.fas.fa-eye
+                    a.action(href='/items/unassign/'+d.id onclick="return confirm('Confirm you want to unassign this order?')" title='Unassign?')
+                      i.fas.fa-lock-open
                     a.action(href='/items/edit/'+d.id title='Edit Product') 
                       i.fas.fa-edit                    
                     a.action(href='#' onclick="return confirm('are you sure you want to delete this branch?')"  title='Delete Product') 
                       i.fas.fa-trash
-              
+            tfoot.thead-light
+              tr
+                th(scope='col') Name
+                th(scope='col') Source
+                th(scope='col') Destination
+                th(scope='col') Courier
+                th(scope='col') Code                
+                th(scope='col') Route
+                th(scope='col') Time
+                th(scope='col') Created At
+                th(scope='col') Delivered
+                th(scope='col') Actions
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js')  
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js')  
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js')

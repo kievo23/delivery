@@ -19,18 +19,17 @@ block content
                     i.ni.ni-pin-3 
                       =head.location              
         .table-responsive
-          table.table.align-items-center.table-flush
+          table.table.align-items-center.table-flush.export#items(name=head.name)
             thead.thead-light
               tr
                 th(scope='col') Code
                 th(scope='col') Name
                 th(scope='col') Source
                 th(scope='col') Destination
-                th(scope='col') Created At
+                th(scope='col') Created At                
+                th(scope='col') Courier
+                th(scope='col') Delivery Time
                 th(scope='col') Delivered
-                if(user.categoryId == 1)
-                  th(scope='col') Courier
-                th(scope='col') Actions
             tbody
               if(data)
                 each d in data
@@ -46,34 +45,21 @@ block content
                       =d.destCustomerDest 
                     td
                       =d.created_at
+                    
+                    td.pb-1.pt-2
+                      =d.vehicle.name  
                     td
-                      =d.delivered
-                    if(user.categoryId == 1)
-                      td.pb-1.pt-2
-                          form(method='post',action='/items/assign/'+d.id)
-                            .input-group
-                              select#courier.form-control.form-control-sm(name="courier" required)
-                                if(d.courierId)
-                                  option(value=d.courier.id)
-                                    =d.courier.name
-                                else 
-                                  option(value)
-                                    | --select courier --
-                                each b in couriers 
-                                  option(value=b.id)
-                                    =b.name 
-                              .input-group-append
-                                .input-group-text.p-0
-                                  button.btn.btn-icon.btn-2.btn-primary.btn-sm(type='submit')
-                                    span.btn-inner--icon
-                                      i.ni.ni-pin-3
-                    td                      
-                      a.action(href='/items/delivered/'+d.id onclick="return confirm('Is this item delivered?')" title='Delivered?')
-                        i.fas.fa-check
-                      a.action(href='/items/'+d.id title='View Product')
-                        i.fas.fa-eye
-                      a.action(href='/items/edit/'+d.id title='Edit Product') 
-                        i.fas.fa-edit                    
-                      a.action(href='#' onclick="return confirm('are you sure you want to delete this branch?')"  title='Delete Product') 
-                        i.fas.fa-trash
+                      =d.deliveryTime  
+                    td
+                      if(d.delivered == true)
+                        | Delivered
+                      else
+                        | Pending
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js')  
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js')  
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js')
+    script(src='https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js')              
                 

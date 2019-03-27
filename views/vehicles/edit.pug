@@ -1,0 +1,39 @@
+extends ../layout-min
+
+block content
+    .row
+      .card.bg-secondary.shadow        
+        .card-body
+          form(method="post",action="/vehicles/update/"+vehicle.id)
+            h6.heading-small.text-muted.mb-4 Vehicle information
+            .pl-lg-4
+              .row
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='name') name
+                    input#name.form-control.form-control-alternative(type='text' placeholder='TMall supermarket' name='name' required value=vehicle.name)
+                .col-lg-4
+                  .form-group
+                    label.form-control-label(for='reg') Registration
+                    input#reg.form-control.form-control-alternative(type='text' placeholder='KAG 444G' name='registration' required value=vehicle.registration)
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='size') Size (Cubic Meters)
+                    input#size.form-control.form-control-alternative(type='text' placeholder='453' name='size' required value=vehicle.size)
+                
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='branch') Branch
+                    select#branch.form-control.form-control-alternative(name="branch")
+                      option(value=vehicle.branch.id)
+                        =vehicle.branch.name
+                      each b in branches 
+                        option(value=b.id)
+                          =b.name                 
+              .form-group.focused
+                label Description
+                textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='details') 
+                  =vehicle.description
+              .row
+                .text-center
+                  button.btn.btn-success.my-4(type='submit') Update Vehicle

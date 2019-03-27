@@ -74,16 +74,16 @@ block content
                   .text-center
                     button.btn.btn-primary.my-4(type='submit') Search
             .col-md-3
-              h6.heading-small.text-muted.mb-4 Search By Driver
+              h6.heading-small.text-muted.mb-4 Search By Vehicle
               form(method="post",action="/reports/couriers")              
                 .row
                   .col-lg-12
                     .form-group.focused
-                      label.form-control-label(for='courier') Source Driver
+                      label.form-control-label(for='courier') Source Vehicle
                       select#courier.form-control.form-control-alternative(name="courier")
                         option(value)
-                          | --select Driver--
-                        each b in drivers 
+                          | --select Vehicle--
+                        each b in vehicles
                           option(value=b.id)
                             =b.name
                     .form-group

@@ -20,6 +20,7 @@ var usersRouter = require('./routes/users');
 var branchesRouter = require('./routes/branches');
 var itemsRouter = require('./routes/items');
 var routesRouter = require('./routes/routes');
+var vehiclesRouter = require('./routes/vehicles');
 
 var app = express();
 
@@ -44,40 +45,58 @@ app.use(flash());
 
 // MIDDLEWARE
 app.use(function( req, res, next) {
-  let couriers = User.count({where: {categoryId: 3}});
-  let managers = User.count({where: {categoryId: 2}});
-  let unassigned = Item.count({ where: { courierId: null}});
-  let totalOrders = Item.count({});
-  let deliveredOrders = Item.count({where: { delivered: true}});
-  let routes = Route.count({});
-  let branches = Branch.count({});
-  Promise.all([couriers,managers,unassigned,totalOrders,deliveredOrders,routes,branches]).then((data) => {
-    var loggedin = false;
-    if(req.user){
-      loggedin = true;
+  var loggedin = false;
+  // set locals, only providing error in development
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.msgerror = req.flash('error') || null;
+  res.locals.msgdefault = req.flash('default') || null;
+  res.locals.msgsuccess = req.flash('success') || null;
+  res.locals.msgprimary = req.flash('primary') || null;
+  res.locals.msginfo = req.flash('info') || null;
+  res.locals.msgwarning = req.flash('warning') || null;
+  //console.log(res.locals.error);
+  if(req.user){
+    loggedin = true;
+    let unassigned;
+    let totalOrders;
+    let deliveredOrders;
+    if(req.user.categoryId == 1){
+      unassigned = Item.count({ where: { vehicleId: null}});
+      totalOrders = Item.count({});
+      deliveredOrders = Item.count({where: { delivered: true}});
+    }else{
+      unassigned = Item.count({ where: { vehicleId: null,managerId: req.user.branchId}});
+      totalOrders = Item.count({where: { branchId: req.user.branchId}});
+      deliveredOrders = Item.count({where: { delivered: true,managerId: req.user.branchId}});
     }
+    let couriers = User.count({where: {categoryId: 3}});
+    let managers = User.count({where: {categoryId: 2}});
 
-    res.locals.allcouriers = data[0];
-    res.locals.allmanagers = data[1];
-    res.locals.unassigned = data[2];
-    res.locals.totalOrders = data[3];
-    res.locals.deliveredOrders = data[4];
-    res.locals.allroutes = data[5];
-    res.locals.allbranches = data[6];
-
-    // set locals, only providing error in development
-    res.locals.success_msg = req.flash('success_msg') || null;
-    res.locals.error_msg = req.flash('error_msg') || null;
-    res.locals.error = req.flash('error') || null;
+    let routes = Route.count({});
+    let branches = Branch.count({});
+    Promise.all([couriers,managers,unassigned,totalOrders,deliveredOrders,routes,branches]).then((data) => {
+      res.locals.allcouriers = data[0];
+      res.locals.allmanagers = data[1];
+      res.locals.unassigned = data[2];
+      res.locals.totalOrders = data[3];
+      res.locals.deliveredOrders = data[4];
+      res.locals.allroutes = data[5];
+      res.locals.allbranches = data[6];
+      //res.locals.message = err.message;
+      res.locals.user = req.user || {};
+      res.locals.loggedin = loggedin;
+      //res.locals.error = req.app.get('env') === 'development' ? err : {};
+      //console.log("MIDDLEWARE IS WORKING!!!");
+      // render the error page
+      //res.status(err.status || 500);
+    });
+  }else{
     //res.locals.message = err.message;
     res.locals.user = req.user || {};
     res.locals.loggedin = loggedin;
-    //res.locals.error = req.app.get('env') === 'development' ? err : {};
-    //console.log("MIDDLEWARE IS WORKING!!!");
-    // render the error page
-    //res.status(err.status || 500);
-    next();
-  });
+  }
+  next();
 });
 
 app.use('/', indexRouter);
@@ -85,6 +104,7 @@ app.use('/users', usersRouter);
 app.use('/branches', branchesRouter);
 app.use('/items', itemsRouter);
 app.use('/routes', routesRouter);
+app.use('/vehicles', vehiclesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -96,7 +116,6 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');

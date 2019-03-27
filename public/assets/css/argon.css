@@ -2951,6 +2951,7 @@ textarea.form-control
 .btn:not(:disabled):not(.disabled)
 {
     cursor: pointer;
+    z-index: 0;
 }
 .btn:not(:disabled):not(.disabled):active,
 .btn:not(:disabled):not(.disabled).active
@@ -3053,14 +3054,14 @@ fieldset:disabled a.btn
 {
     color: #fff;
     border-color: #2dce89;
-    background-color: #2dce89;
+    background-color: #0c6624;
     box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
 }
 .btn-success:hover
 {
     color: #fff;
     border-color: #2dce89;
-    background-color: #2dce89;
+    background-color: #0c6624;
 }
 .btn-success:focus,
 .btn-success.focus
@@ -15054,7 +15055,7 @@ button.bg-lighter:focus
 
 .bg-gradient-success
 {
-    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%) !important;
+    background: linear-gradient(87deg, #027c23 0, #2dcecc 100%) !important;
 }
 
 .bg-gradient-info
@@ -15410,7 +15411,7 @@ button.section-darker:focus
 
 .bg-gradient-success
 {
-    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%) !important;
+    background: linear-gradient(87deg, #027c23 0, #086621 100%) !important;
 }
 
 .bg-gradient-info
