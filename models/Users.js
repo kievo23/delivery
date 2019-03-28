@@ -14,11 +14,18 @@ const User = sequelize.define('users',{
       allowNull: true,
       defaultValue: ' coming soon '
     },
-    password: Sequelize.STRING
+    password: Sequelize.STRING,
+    passwordChanged: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: 0
+    }
   },{
   timestamps: true, // timestamps will now be true
   hooks: {
     beforeCreate: (user, options) => {
+      user.password = bcrypt.hashSync(user.password, 10);
+    },
+    beforeUpdate: (user, options) => {
       user.password = bcrypt.hashSync(user.password, 10);
     }
   }

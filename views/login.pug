@@ -33,9 +33,24 @@ head
       .col-lg-5.col-md-7
         .card.bg-secondary.shadow.border-0
           .card-body.px-lg-5.py-lg-5
-            if(error)
+            - if(msgerror.length)
               .alert.alert-danger
-                =error
+                =msgerror
+            if msginfo.length
+              .alert.alert-info 
+                =msginfo 
+            if msgsuccess.length 
+              .alert.alert-success 
+                =msgsuccess
+            if msgprimary.length
+              .alert.alert-primary 
+                =msgprimary
+            if msgwarning.length
+              .alert.alert-warning
+                =msgwarning
+            if msgdefault.length 
+              .alert.alert-default
+                =msgdefault
             form(method='post' action='/login')
               .form-group.mb-3
                 .input-group.input-group-alternative

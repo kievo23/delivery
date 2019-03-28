@@ -17,6 +17,8 @@ block content
                 th(scope='col') Location
                 th(scope='col') Contacts
                 th(scope='col') Details
+                th(scope='col') Category
+                th(scope='col') Region
                 th(scope='col') Actions
                 th(scope='col')
             tbody
@@ -30,6 +32,10 @@ block content
                     =d.contacts 
                   td
                     =d.details 
+                  td
+                    =d.type.name
+                  td
+                    =d.region.name 
                   td
                     a.action(href='/branches/edit/'+ d.id) 
                       i.fas.fa-edit

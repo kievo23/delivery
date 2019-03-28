@@ -20,7 +20,24 @@ block content
                   .form-group.focused
                     label.form-control-label(for='input-first-name') Contacts
                     input#contacts.form-control.form-control-alternative(type='text' placeholder='First name' required name='contacts')
-                
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='typeId') Branch Category
+                    select#type.form-control.form-control-alternative(name="typeId")
+                      option(value)
+                        | --select Type--
+                      each b in types 
+                        option(value=b.id)
+                          =b.name 
+                .col-lg-4
+                  .form-group.focused
+                    label.form-control-label(for='typeId') Branch Region
+                    select#regionId.form-control.form-control-alternative(name="regionId")
+                      option(value)
+                        | --select Region--
+                      each b in regions 
+                        option(value=b.id)
+                          =b.name
               .form-group.focused
                 label About Branch
                 textarea.form-control.form-control-alternative(rows='4' placeholder='A few words about you ...' name='details') 

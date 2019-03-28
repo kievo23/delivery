@@ -7,7 +7,7 @@ const Route = require('../models/Routes');
 const role = require('../config/role');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',role.admin, function(req, res, next) {
   Route.build({
     name: "t mall",
     details: "bla bla"
